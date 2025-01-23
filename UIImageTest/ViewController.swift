@@ -20,7 +20,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        guard let imageUrl = Bundle.main.url(forResource: "image", withExtension: "jpeg") else { return }
+        guard let imageUrl = Bundle.main.url(forResource: "testImage", withExtension: "jpg") else { return }
         guard let image = UIImage(contentsOfFile: imageUrl.path) else { return }
         imageView.image = image
         

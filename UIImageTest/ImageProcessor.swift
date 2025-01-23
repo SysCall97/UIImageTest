@@ -31,6 +31,7 @@ protocol AnyImageProcessorDelegate: AnyObject {
 
 final class ImageProcessor {
     private let pixelBuffer: ByteBuffer?
+    let ciContext = CIContext(options: [.useSoftwareRenderer: false])
     private var configuration: ImageConfiguration {
         didSet {
             print("Image configuration updated")
@@ -56,7 +57,7 @@ final class ImageProcessor {
     
     func getProcessedImage() -> UIImage? {
         guard let pixelBuffer = pixelBuffer else { return nil }
-        return pixelBuffer.toUIImage(with: configuration)
+        return pixelBuffer.toUIImageInGPU(with: configuration, ciContext: ciContext)
     }
     
 }

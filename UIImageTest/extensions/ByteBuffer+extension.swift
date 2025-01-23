@@ -5,7 +5,8 @@
 //  Created by Kazi Mashry on 24/1/25.
 //
 
-import UIKit.UIImage
+import CoreImage
+import UIKit
 
 typealias ByteBuffer = [UInt8]
 
@@ -42,4 +43,60 @@ extension ByteBuffer {
         return UIImage(cgImage: cgImage)
         
     }
+}
+
+extension ByteBuffer {
+    func toUIImageInGPU(with configuration: ImageConfiguration, ciContext: CIContext) -> UIImage? {
+        let colorDominance = configuration.colorDominance
+
+        guard let dataProvider = CGDataProvider(data: Data(self) as CFData),
+              let cgImage = CGImage(
+                width: configuration.width,
+                height: configuration.height,
+                bitsPerComponent: 8,
+                bitsPerPixel: 8 * 4,
+                bytesPerRow: 4 * configuration.width,
+                space: CGColorSpaceCreateDeviceRGB(),
+                bitmapInfo: CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue),
+                provider: dataProvider,
+                decode: nil,
+                shouldInterpolate: true,
+                intent: .defaultIntent
+              ) else {
+            return nil
+        }
+
+        let ciImage = CIImage(cgImage: cgImage)
+
+        let dominanceVector = CIVector(x: CGFloat(colorDominance.rDominance),
+                                       y: CGFloat(colorDominance.gDominance),
+                                       z: CGFloat(colorDominance.bDominance),
+                                       w: CGFloat(colorDominance.aDominance))
+        let processedImage = ColorDominanceFilter.kernel.apply(
+            extent: ciImage.extent,
+            arguments: [ciImage, dominanceVector]
+        )
+
+        if let outputImage = processedImage,
+           let outputCGImage = ciContext.createCGImage(outputImage, from: outputImage.extent) {
+            return UIImage(cgImage: outputCGImage)
+        }
+
+        return nil
+    }
+}
+
+
+
+class ColorDominanceFilter {
+    static let kernel = CIColorKernel(source: """
+    kernel vec4 colorDominance(__sample image, vec4 dominance) {
+        return vec4(
+            image.r * dominance.r,
+            image.g * dominance.g,
+            image.b * dominance.b,
+            image.a * dominance.a
+        );
+    }
+    """)!
 }
