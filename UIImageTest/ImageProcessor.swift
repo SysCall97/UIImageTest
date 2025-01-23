@@ -8,8 +8,6 @@
 import Foundation
 import UIKit.UIImage
 
-typealias ByteBuffer = [UInt8]
-
 struct RGBADominance {
     let rDominance: Float
     let gDominance: Float
