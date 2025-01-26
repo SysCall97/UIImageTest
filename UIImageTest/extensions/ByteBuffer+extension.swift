@@ -84,6 +84,10 @@ extension ByteBuffer {
 
         return nil
     }
+
+    func toUIImageInGPUWithMetal(with configuration: ImageConfiguration) -> UIImage? {
+        return MetalColorDominanceProcessor.shared?.processImage(inputBuffer: self, configuration: configuration)
+    }
 }
 
 

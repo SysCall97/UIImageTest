@@ -57,7 +57,9 @@ final class ImageProcessor {
     
     func getProcessedImage() -> UIImage? {
         guard let pixelBuffer = pixelBuffer else { return nil }
-        return pixelBuffer.toUIImageInGPU(with: configuration, ciContext: ciContext)
+//        return pixelBuffer.toUIImage(with: configuration)
+//        return pixelBuffer.toUIImageInGPU(with: configuration, ciContext: ciContext)
+        return pixelBuffer.toUIImageInGPUWithMetal(with: configuration)
     }
     
 }
