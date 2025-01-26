@@ -14,6 +14,7 @@ struct RGBADominance {
     let bDominance: Float
     let aDominance: Float
 }
+
 struct ImageConfiguration {
     let width: Int
     let height: Int
@@ -23,7 +24,6 @@ struct ImageConfiguration {
         self.colorDominance = colorDominance
     }
 }
-
 
 protocol AnyImageProcessorDelegate: AnyObject {
     func configurationUpdated()
@@ -94,7 +94,7 @@ extension ImageProcessor {
                                          aDominance: alphaDominance)
         updateColorDominance(newDominance)
     }
-    
+
     private func updateColorDominance(_ dominance: RGBADominance) {
         self.configuration.update(colorDominance: dominance)
     }

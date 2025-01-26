@@ -8,7 +8,7 @@
 import CoreImage
 import UIKit
 
-typealias ByteBuffer = [UInt8]
+public typealias ByteBuffer = [UInt8]
 
 extension ByteBuffer {
     func toUIImage(with configuration: ImageConfiguration) -> UIImage? {
