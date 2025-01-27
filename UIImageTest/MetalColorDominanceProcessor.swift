@@ -78,11 +78,11 @@ class MetalColorDominanceProcessor {
 
         let width = pipelineState.threadExecutionWidth
         let height = pipelineState.maxTotalThreadsPerThreadgroup / width
-        let threadgroupSize = MTLSize(width: width, height: height, depth: 1)
-        let threadgroups = MTLSize(width: (inputTexture.width + width - 1) / width,
+        let threadGroupSize = MTLSize(width: width, height: height, depth: 1)
+        let threadGroups = MTLSize(width: (inputTexture.width + width - 1) / width,
                                    height: (inputTexture.height + height - 1) / height,
                                    depth: 1)
-        computeEncoder.dispatchThreadgroups(threadgroups, threadsPerThreadgroup: threadgroupSize)
+        computeEncoder.dispatchThreadgroups(threadGroups, threadsPerThreadgroup: threadGroupSize)
 
         computeEncoder.endEncoding()
         commandBuffer.commit()
