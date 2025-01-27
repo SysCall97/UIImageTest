@@ -132,7 +132,7 @@ extension MetalProcessor {
         computeEncoder.setComputePipelineState(circularImagePipelineState)
         computeEncoder.setTexture(inputTexture, index: 0)
         computeEncoder.setTexture(outputTexture, index: 1)
-        computeEncoder.setBytes(&boundary, length: MemoryLayout<SIMD4<Float>>.stride, index: 0)
+        computeEncoder.setBytes(&boundary, length: MemoryLayout<SIMD3<Float>>.stride, index: 0)
 
 
         let width = colorDominancePipelineState.threadExecutionWidth
