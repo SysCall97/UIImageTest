@@ -15,9 +15,13 @@ struct RGBADominance {
     let aDominance: Float
 }
 
-struct ImageConfiguration {
+struct ImageSize {
     let width: Int
     let height: Int
+}
+
+struct ImageConfiguration {
+    let size: ImageSize
     var colorDominance: RGBADominance
     
     mutating func update(colorDominance: RGBADominance) {
@@ -50,8 +54,7 @@ final class ImageProcessor {
         
         
         self.configuration = ImageConfiguration(
-                                width: image.getWidth(),
-                                height: image.getHeight(),
+                                size: ImageSize(width: image.getWidth(), height: image.getHeight()),
                                 colorDominance: colorDominance)
     }
     

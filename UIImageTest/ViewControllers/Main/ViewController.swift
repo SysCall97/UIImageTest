@@ -45,6 +45,12 @@ class ViewController: UIViewController {
         self.imageProcessor.update(alphaDominance: aSlider.value)
     }
     
+    @IBAction func nextButtonPressed(_ sender: Any) {
+        let storyboard = UIStoryboard(name: "MakeRoundVC", bundle: .main)
+        let congratulationsVC = storyboard.instantiateViewController(withIdentifier: "MakeRoundVC") as! MakeRoundVC
+        congratulationsVC.modalPresentationStyle = .overFullScreen
+        self.present(congratulationsVC, animated: true)
+    }
 }
 
 extension ViewController: AnyImageProcessorDelegate {

@@ -28,6 +28,3 @@ kernel void colorDominance(texture2d<float, access::read> input [[texture(0)]],
     // Write the result back to the output texture
     output.write(result, gid);
 }
-
-
-

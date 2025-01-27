@@ -14,8 +14,8 @@ extension ByteBuffer {
     func toUIImage(with configuration: ImageConfiguration) -> UIImage? {
         let colorSpace = CGColorSpaceCreateDeviceRGB()
         let bytesPerPixel = 4
-        let bytesPerRow = bytesPerPixel * configuration.width
-        
+        let bytesPerRow = bytesPerPixel * configuration.size.width
+
         
         var pixelBuffer: ByteBuffer = []
         let colorDominance: RGBADominance = configuration.colorDominance
@@ -32,8 +32,8 @@ extension ByteBuffer {
         
         guard let context = CGContext(
             data: UnsafeMutableRawPointer(mutating: pixelBuffer),
-            width: configuration.width,
-            height: configuration.height,
+            width: configuration.size.width,
+            height: configuration.size.height,
             bitsPerComponent: 8,
             bytesPerRow: bytesPerRow,
             space: colorSpace,
@@ -51,11 +51,11 @@ extension ByteBuffer {
 
         guard let dataProvider = CGDataProvider(data: Data(self) as CFData),
               let cgImage = CGImage(
-                width: configuration.width,
-                height: configuration.height,
+                width: configuration.size.width,
+                height: configuration.size.height,
                 bitsPerComponent: 8,
                 bitsPerPixel: 8 * 4,
-                bytesPerRow: 4 * configuration.width,
+                bytesPerRow: 4 * configuration.size.width,
                 space: CGColorSpaceCreateDeviceRGB(),
                 bitmapInfo: CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue),
                 provider: dataProvider,
@@ -86,7 +86,11 @@ extension ByteBuffer {
     }
 
     func toUIImageInGPUWithMetal(with configuration: ImageConfiguration) -> UIImage? {
-        return MetalColorDominanceProcessor.shared?.processImage(inputBuffer: self, configuration: configuration)
+        return MetalProcessor.shared?.processImage(inputBuffer: self, configuration: configuration)
+    }
+
+    func toCircularUIImageInGPUWithMetal(with configuration: Circle) -> UIImage? {
+        return MetalProcessor.shared?.processCircularImage(inputBuffer: self, configuration: configuration)
     }
 }
 
