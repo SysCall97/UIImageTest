@@ -92,6 +92,10 @@ extension ByteBuffer {
     func toCircularUIImageInGPUWithMetal(with configuration: Circle) -> UIImage? {
         return MetalProcessor.shared?.processCircularImage(inputBuffer: self, configuration: configuration)
     }
+
+    func toPreviewImageInGPUWithMetal(with configuration: AreaConfiguration) -> UIImage? {
+        return MetalProcessor.shared?.processPreviewImage(inputBuffer: self, configuration: configuration)
+    }
 }
 
 

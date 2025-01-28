@@ -20,7 +20,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        guard let imageUrl = Bundle.main.url(forResource: "testImage", withExtension: "jpg") else { return }
+        guard let imageUrl = Bundle.main.url(forResource: "image", withExtension: "jpeg") else { return }
         guard let image = UIImage(contentsOfFile: imageUrl.path) else { return }
         imageView.image = image
         
@@ -51,6 +51,14 @@ class ViewController: UIViewController {
         congratulationsVC.modalPresentationStyle = .overFullScreen
         self.present(congratulationsVC, animated: true)
     }
+
+    @IBAction func panExpButtonPressed(_ sender: Any) {
+        let storyboard = UIStoryboard(name: "PanExpVC", bundle: .main)
+        let congratulationsVC = storyboard.instantiateViewController(withIdentifier: "PanExpVC") as! PanExpVC
+        congratulationsVC.modalPresentationStyle = .overFullScreen
+        self.present(congratulationsVC, animated: true)
+    }
+    
 }
 
 extension ViewController: AnyImageProcessorDelegate {

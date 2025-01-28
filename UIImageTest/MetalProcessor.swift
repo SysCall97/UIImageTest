@@ -17,13 +17,15 @@ class MetalProcessor {
     let defaultLibrary: MTLLibrary
     let colorDominancePipelineState: MTLComputePipelineState
     let circularImagePipelineState: MTLComputePipelineState
+    let previewImagePipelineState: MTLComputePipelineState
 
     private init?() {
         guard let device = MTLCreateSystemDefaultDevice(),
               let commandQueue = device.makeCommandQueue(),
               let defaultLibrary = device.makeDefaultLibrary(),
               let colorDominanceKernelFunction = defaultLibrary.makeFunction(name: "colorDominance"),
-              let circularImageKernelFunction = defaultLibrary.makeFunction(name: "circularImage") else {
+              let circularImageKernelFunction = defaultLibrary.makeFunction(name: "circularImage"),
+              let previewImageKernelFunction = defaultLibrary.makeFunction(name: "previewImage") else {
             return nil
         }
 
@@ -32,6 +34,7 @@ class MetalProcessor {
         self.defaultLibrary = defaultLibrary
         self.colorDominancePipelineState = try! device.makeComputePipelineState(function: colorDominanceKernelFunction)
         self.circularImagePipelineState = try! device.makeComputePipelineState(function: circularImageKernelFunction)
+        self.previewImagePipelineState = try! device.makeComputePipelineState(function: previewImageKernelFunction)
     }
 
     private func createTexture(from buffer: ByteBuffer, size: ImageSize) -> MTLTexture? {
@@ -54,9 +57,11 @@ class MetalProcessor {
             return nil
         }
 
-        let flippedImage = ciImage.oriented(forExifOrientation: 4) // 4 is the EXIF orientation for 180-degree flip
+        let flippedImage = ciImage.oriented(forExifOrientation: 4)
 
-        return UIImage(ciImage: flippedImage)
+        let image = UIImage(ciImage: flippedImage)
+
+        return image
     }
 
 }
@@ -84,6 +89,23 @@ extension MetalProcessor {
         }
 
         applyCircularKernel(inputTexture: inputTexture, outputTexture: outputTexture, configuration: configuration)
+        return convertToUIImage(from: outputTexture)
+    }
+
+    func processPreviewImage(inputBuffer: ByteBuffer, configuration: AreaConfiguration) -> UIImage? {
+        guard let inputTexture = createTexture(from: inputBuffer, size: configuration.size),
+              let outputTexture = createEmptyTexture(width: configuration.previewImageSize.width, height: configuration.previewImageSize.height) else {
+            return nil
+        }
+
+        print(configuration.bottomRight.x - configuration.topLeft.x)
+        print(configuration.previewImageSize.width)
+
+        print(configuration.topLeft.y - configuration.bottomRight.y)
+        print(configuration.previewImageSize.height)
+
+        
+        applyPreviewKernel(inputTexture: inputTexture, outputTexture: outputTexture, configuration: configuration)
         return convertToUIImage(from: outputTexture)
     }
 }
@@ -147,5 +169,40 @@ extension MetalProcessor {
         commandBuffer.commit()
         commandBuffer.waitUntilCompleted()
 
+    }
+
+    private func applyPreviewKernel(inputTexture: MTLTexture, outputTexture: MTLTexture, configuration: AreaConfiguration) {
+        guard let commandBuffer = commandQueue.makeCommandBuffer(),
+              let computeEncoder = commandBuffer.makeComputeCommandEncoder() else {
+            return
+        }
+
+        let topLeft = configuration.topLeft
+        let bottomRight = configuration.bottomRight
+
+        print(topLeft)
+        print(bottomRight)
+
+        let lowerX: Float = Float(topLeft.x)
+        let lowerY: Float = Float(topLeft.y)
+        var boundary = SIMD2<Float>(lowerX, lowerY)
+
+        computeEncoder.setComputePipelineState(previewImagePipelineState)
+        computeEncoder.setTexture(inputTexture, index: 0)
+        computeEncoder.setTexture(outputTexture, index: 1)
+        computeEncoder.setBytes(&boundary, length: MemoryLayout<SIMD2<Float>>.stride, index: 0)
+
+
+        let width = colorDominancePipelineState.threadExecutionWidth
+        let height = colorDominancePipelineState.maxTotalThreadsPerThreadgroup / width
+        let threadGroupSize = MTLSize(width: width, height: height, depth: 1)
+        let threadGroups = MTLSize(width: (inputTexture.width + width - 1) / width,
+                                   height: (inputTexture.height + height - 1) / height,
+                                   depth: 1)
+        computeEncoder.dispatchThreadgroups(threadGroups, threadsPerThreadgroup: threadGroupSize)
+
+        computeEncoder.endEncoding()
+        commandBuffer.commit()
+        commandBuffer.waitUntilCompleted()
     }
 }

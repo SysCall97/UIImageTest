@@ -72,6 +72,18 @@
                                     <action selector="nextButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="YNR-Fj-gfk"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RZX-z9-Yqb">
+                                <rect key="frame" x="35" y="101" width="75" height="35"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="75" id="9tY-43-7gE"/>
+                                    <constraint firstAttribute="height" constant="35" id="Yjo-pX-YOm"/>
+                                </constraints>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                                <connections>
+                                    <action selector="panExpButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="cZ6-Ah-z1T"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -79,12 +91,14 @@
                             <constraint firstItem="CPG-on-Agx" firstAttribute="top" secondItem="71a-ff-q7N" secondAttribute="bottom" constant="20" id="2pR-hf-fM6"/>
                             <constraint firstItem="bGQ-2B-29a" firstAttribute="trailing" secondItem="mBf-Py-ct8" secondAttribute="trailing" id="5pR-kt-um3"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="7BV-97-Tcq" secondAttribute="trailing" constant="22" id="6ym-ij-Kmm"/>
+                            <constraint firstItem="RZX-z9-Yqb" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="35" id="CJ2-db-arR"/>
                             <constraint firstItem="Hom-jg-Ori" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="Ic0-Nm-RRa"/>
                             <constraint firstItem="mBf-Py-ct8" firstAttribute="top" secondItem="CPG-on-Agx" secondAttribute="bottom" constant="20" id="NUA-Ri-uht"/>
                             <constraint firstItem="CPG-on-Agx" firstAttribute="trailing" secondItem="71a-ff-q7N" secondAttribute="trailing" id="R6n-b1-wSm"/>
                             <constraint firstItem="bGQ-2B-29a" firstAttribute="top" secondItem="mBf-Py-ct8" secondAttribute="bottom" constant="20" id="RiZ-1c-9G2"/>
                             <constraint firstItem="mBf-Py-ct8" firstAttribute="leading" secondItem="CPG-on-Agx" secondAttribute="leading" id="TwP-fB-Y25"/>
                             <constraint firstItem="7BV-97-Tcq" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="42" id="ZIi-ZT-JHB"/>
+                            <constraint firstItem="RZX-z9-Yqb" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="42" id="blH-l7-uEL"/>
                             <constraint firstItem="CPG-on-Agx" firstAttribute="leading" secondItem="71a-ff-q7N" secondAttribute="leading" id="kKH-EG-yZv"/>
                             <constraint firstItem="bGQ-2B-29a" firstAttribute="leading" secondItem="mBf-Py-ct8" secondAttribute="leading" id="lEW-7g-T2F"/>
                             <constraint firstItem="71a-ff-q7N" firstAttribute="top" secondItem="Hom-jg-Ori" secondAttribute="bottom" constant="30" id="luh-Kb-fR6"/>
